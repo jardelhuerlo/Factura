@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Factura</title>
+	<meta charset="utf-8">
+	<link rel="stylesheet" href="estilos.css">
+
+</head>
+
+<body>
+	<div>
+		<h1>Datos Del Cliente</h1>
+		<label>Numero De Factura: <input type="number" name="nfactura" id="nfactura" class="diseño-input"> </label><br>
+		<br><label>Fecha De Emisión: <input type="date" name="fecha" id="fecha" class="diseño-input"> </label><br>
+		<br><label>Cliente: <input type="text" name="cliente" id="cliente" class="diseño-input"> </label>
+	</div><br>
+
+	<div>
+		<h1>Productos</h1>
+		<form id="productos">
+			<label>Código de Artículo</label>
+			<input type="number" name="codigo" id="codigo" class="diseño-input"><br>
+			<br><label>Descripción:</label>
+			<input type="text" name="descripcion" id="descripcion" class="diseño-input"><br>
+			<br><label>Cantidad:</label>
+			<input type="number" name="cantidad" id="cantidad" class="diseño-input" oninput="multiplicar()"><br>
+			<br><label>Precio Unitario:</label>
+			<input type="number" name="precio" id="precio" class="diseño-input" step="0.001"
+				oninput="multiplicar()"><br>
+			<br><label>Total</label>
+			<input type="number" name="total" id="total" class="diseño-input"><br>
+
+			<br><button type="submit" class="botones">Agregar Producto</button>
+
+		</form>
+	</div><br>
+	<br>
+	<div id="main-container">
+		<table style="width: 100%" id="mitabla">
+			<thead>
+				<tr>
+					<th>Código de Artículo</th>
+					<th>Descripción</th>
+					<th>Cantidad </th>
+					<th>Precio Unitario</th>
+					<th>Total</th>
+					<th>Borrar</th>
+
+				</tr>
+			</thead>
+
+		</table>
+		<label>Total a pagar</label>
+		<input type="text" value="0" disabled id="totalFinal">
+	</div>
+	<div>
+
+
+	</div>
+
+
+	<script>
+		const form = document.getElementById("productos");
+		var totalFin = '';
+		form.addEventListener("submit", function (event) {
+			event.preventDefault();
+			let productosFormData = new FormData(form);
+			let mitablaRef = document.getElementById("mitabla");
+			let nuevafila = mitablaRef.insertRow(-1);
+
+			let nuevacelda = nuevafila.insertCell(0);
+			nuevacelda.textContent = productosFormData.get("codigo")
+
+			nuevacelda = nuevafila.insertCell(1);
+			nuevacelda.textContent = productosFormData.get("descripcion")
+
+			nuevacelda = nuevafila.insertCell(2);
+			nuevacelda.textContent = productosFormData.get("cantidad")
+
+			nuevacelda = nuevafila.insertCell(3);
+			nuevacelda.textContent = productosFormData.get("precio");
+
+			nuevacelda = nuevafila.insertCell(4);
+			nuevacelda.textContent = productosFormData.get("total");
+
+			let borrarcelda = nuevafila.insertCell(5);
+			let borrarButton = document.createElement("button");
+			borrarButton.textContent = "Eliminar";
+			borrarcelda.appendChild(borrarButton)
+			let uno = parseFloat(document.getElementById("cantidad").value) || 0;
+			let dos = parseFloat(document.getElementById("precio").value) || 0;
+			let multi = uno * dos;
+			let tot = document.getElementById('totalFinal').value;
+			totalFin = multi + Number(tot)
+			let a = borrarcelda.previousSibling.innerHTML
+			document.getElementById('totalFinal').value = totalFin
+			borrarButton.addEventListener("click", (event) => {
+				event.target.parentNode.parentNode.remove()
+				totalFin = totalFin - Number(a);
+				document.getElementById('totalFinal').value = totalFin
+			})
+			
+		})
+
+		function multiplicar() {
+
+			var uno = parseFloat(document.getElementById("cantidad").value) || 0;
+			dos = parseFloat(document.getElementById("precio").value) || 0;
+
+			document.getElementById("total").value = dos * uno;
+
+		}
+
+	</script>
+
+
+	<input type="button" value="Terminar Factura" class="botones" onclick="window.print()">
+</body>
+
+</html>
